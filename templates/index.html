@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4fbf7">
+  <title>ThreatLens | Threat Intelligence &amp; Device Defense</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="cyber-glow-orb orb-1" aria-hidden="true"></div>
+  <div class="cyber-glow-orb orb-2" aria-hidden="true"></div>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="ThreatLens home">
+        <span class="brand-mark" aria-hidden="true">🛡️</span>
+        <span><strong>ThreatLens <span class="badge-ai">AI SEC-OPS</span></strong><small>THREAT INTELLIGENCE &amp; DEVICE DEFENSE</small></span>
+      </a>
+      <div class="engine-badges" aria-label="Provider status">
+        <span class="status-badge live" id="badge-vt"><i></i> VIRUSTOTAL STATUS</span>
+        <span class="status-badge groq" id="badge-groq"><i></i> AI STATUS</span>
+      </div>
+    </header>
+
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow">SOC INTELLIGENCE CONSOLE · ENDPOINT PROTECTION</p>
+      <h1 id="page-title">Dissect threats.<br><em>Defend your devices.</em></h1>
+      <p class="lede">Check URLs, domains, IP addresses, hashes, and files. A domain ending alone cannot prove a site is official.</p>
+    </section>
+
+    <section class="panel scanner" id="scanner-panel" aria-label="Threat scanner">
+      <div id="scan-radar-overlay" class="radar-overlay hidden" aria-live="polite">
+        <div class="laser-beam"></div>
+        <div class="radar-content"><div class="radar-spinner" aria-hidden="true"></div><strong id="radar-status-text">Preparing analysis...</strong><span id="radar-subtext">Checking the configured analysis provider.</span></div>
+      </div>
+      <nav class="tabs" role="tablist" aria-label="Indicator type">
+        <button class="tab active" type="button" role="tab" aria-selected="true" tabindex="0" data-type="url">URL</button>
+        <button class="tab" type="button" role="tab" aria-selected="false" tabindex="-1" data-type="domain">DOMAIN</button>
+        <button class="tab" type="button" role="tab" aria-selected="false" tabindex="-1" data-type="ip">IP ADDRESS</button>
+        <button class="tab" type="button" role="tab" aria-selected="false" tabindex="-1" data-type="hash">HASH</button>
+        <button class="tab" type="button" role="tab" aria-selected="false" tabindex="-1" data-type="file">FILE</button>
+      </nav>
+      <form id="scan-form">
+        <div class="input-row">
+          <label class="visually-hidden" for="indicator">Indicator to analyze</label>
+          <input id="indicator" name="indicator" autocomplete="off" placeholder="https://example.com/path" spellcheck="false">
+          <input id="file" name="file" type="file" hidden>
+          <button id="scan-button" type="submit"><span class="btn-text">Analyze indicator</span><span class="btn-icon" aria-hidden="true">⚡</span></button>
+        </div>
+      </form>
+      <div id="dropzone" class="dropzone hidden" role="region" aria-label="File upload">
+        <div class="drop-icon" aria-hidden="true">📁</div>
+        <p>Drop a file here or <button type="button" id="browse">browse files</button></p>
+        <small>Maximum file size: 32 MB. The file is hashed in memory; no file is executed.</small>
+      </div>
+      <div class="quick-samples">
+        <span>Sample indicators:</span>
+        <button type="button" class="sample-btn" data-type="ip" data-val="8.8.8.8">8.8.8.8</button>
+        <button type="button" class="sample-btn" data-type="domain" data-val="google.com">google.com</button>
+        <button type="button" class="sample-btn" data-type="hash" data-val="44d88612fea8a8f36de82e1278abb02f">EICAR test hash</button>
+      </div>
+    </section>
+
+    <section class="stats" aria-label="Session summary">
+      <div><span>SCANS THIS SESSION</span><strong id="scan-count">0</strong></div>
+      <div><span>LAST SEVERITY</span><strong id="last-severity">--</strong></div>
+      <div><span>LAST DETECTION SCORE</span><strong id="last-score">--</strong></div>
+    </section>
+
+    <section class="panel result simple-mode hidden" id="result" tabindex="-1" aria-live="polite">
+      <div class="view-mode-bar">
+        <div class="view-mode-title"><span class="pulse-dot"></span><span>ANALYSIS RESULT</span></div>
+        <div class="view-mode-toggle" role="group" aria-label="Result detail level">
+          <button type="button" class="mode-btn active" id="btn-mode-simple">Summary</button>
+          <button type="button" class="mode-btn" id="btn-mode-soc">Analyst details</button>
+        </div>
+      </div>
+      <div class="result-head">
+        <div class="result-title-group">
+          <div class="result-tags"><span id="severity-badge" class="severity-badge">SEVERITY: --</span><span id="ai-model-tag" class="ai-model-tag">Analysis source</span></div>
+          <h2 id="result-title">Analyzing indicator...</h2>
+          <p id="result-meta" class="muted"></p>
+        </div>
+        <div class="score-container"><div class="score-gauge-wrap">
+          <svg class="score-gauge" viewBox="0 0 100 100" aria-hidden="true"><circle class="gauge-bg" cx="50" cy="50" r="42"></circle><circle class="gauge-fill" id="gauge-fill-circle" cx="50" cy="50" r="42"></circle></svg>
+          <div class="gauge-inner"><strong id="score">0</strong>          <span>DETECTION SCORE</span></div>
+        </div></div>
+      </div>
+      <div class="bar" aria-hidden="true"><i id="score-bar"></i></div>
+      <div class="details">
+        <div><span>DETECTION RATIO</span><strong id="ratio">--</strong></div>
+        <div><span>CLASSIFICATION</span><strong id="threat-classification">--</strong></div>
+        <div><span>INTELLIGENCE SOURCE</span><strong id="source">--</strong></div>
+      </div>
+
+      <div id="simple-view-container" class="simple-view-container">
+        <div id="simple-verdict-banner" class="simple-verdict-banner not-verified" role="status" aria-label="Scan verdict">
+          <h3 id="simple-headline">NOT VERIFIED</h3>
+        </div>
+      </div>
+
+      <div id="soc-view-container" class="soc-view-container hidden">
+        <nav class="subtabs" role="tablist" aria-label="Analysis details">
+          <button class="subtab active" type="button" data-subtab="ai-intel">Threat analysis</button>
+          <button class="subtab" type="button" data-subtab="protection">Protection steps</button>
+          <button class="subtab" type="button" data-subtab="engines">Engines (<span id="engine-count">0</span>)</button>
+          <button class="subtab" type="button" data-subtab="chat">Ask AI analyst</button>
+          <button class="subtab" type="button" data-subtab="export">Export</button>
+        </nav>
+        <section class="subtab-content" id="subtab-ai-intel">
+          <article class="intel-card summary-card"><div class="intel-card-header"><span class="icon" aria-hidden="true">🔍</span><h3>Evidence summary</h3></div><p id="ai-summary" class="intel-text">Analysis details will appear here.</p></article>
+          <div class="intel-grid mt-20">
+            <article class="intel-card"><div class="intel-card-header"><h4>Attack vector</h4></div><p id="ai-attack-vector" class="intel-text"></p></article>
+            <article class="intel-card"><div class="intel-card-header"><h4>Observed behavior</h4></div><p id="ai-execution" class="intel-text"></p></article>
+            <article class="intel-card full-span"><div class="intel-card-header"><h4>Potential impact</h4></div><p id="ai-damage" class="intel-text"></p></article>
+          </div>
+          <article class="intel-card mt-20"><div class="intel-card-header"><h4>MITRE ATT&amp;CK mapping</h4></div><div id="mitre-container" class="mitre-grid"></div></article>
+          <section class="mt-20"><div class="intel-card-header"><h4>Factors in this score</h4></div><div id="factors" class="factors"></div></section>
+        </section>
+        <section class="subtab-content hidden" id="subtab-protection">
+          <div class="playbook-banner"><div><h3>Device protection steps</h3><p>Review these recommendations before taking action on a device.</p></div></div>
+          <article class="playbook-phase phase-1"><div class="phase-header"><span class="phase-num">01</span><h4>Containment</h4></div><ul id="containment-list" class="playbook-checklist"></ul></article>
+          <article class="playbook-phase phase-2"><div class="phase-header"><span class="phase-num">02</span><h4>Remediation</h4></div><ul id="remediation-list" class="playbook-checklist"></ul></article>
+          <article class="playbook-phase phase-3"><div class="phase-header"><span class="phase-num">03</span><h4>Hardening</h4></div><ul id="hardening-list" class="playbook-checklist"></ul></article>
+          <article class="terminal-block mt-20"><div class="terminal-header"><span>Windows PowerShell</span><button type="button" class="copy-btn" id="copy-win-script">Copy</button></div><pre><code id="windows-script-code">No command available.</code></pre></article>
+          <article class="terminal-block mt-15"><div class="terminal-header"><span>Linux / macOS</span><button type="button" class="copy-btn" id="copy-nix-script">Copy</button></div><pre><code id="nix-script-code">No command available.</code></pre></article>
+        </section>
+        <section class="subtab-content hidden" id="subtab-engines">
+          <div class="engine-filter-bar">
+            <label class="visually-hidden" for="engine-search">Search security engines</label><input type="search" id="engine-search" placeholder="Search security engines" class="filter-input">
+            <div class="engine-filter-btns" role="group" aria-label="Filter engine results"><button type="button" class="filter-btn active" data-filter="all">All</button><button type="button" class="filter-btn" data-filter="malicious">Malicious</button><button type="button" class="filter-btn" data-filter="suspicious">Suspicious</button><button type="button" class="filter-btn" data-filter="clean">Undetected</button></div>
+          </div>
+          <div class="table-wrap engine-table-wrap"><table id="engine-table"><thead><tr><th>ENGINE</th><th>RESULT</th><th>DETECTION</th></tr></thead><tbody id="engine-table-body"></tbody></table></div>
+        </section>
+        <section class="subtab-content hidden" id="subtab-chat">
+          <div class="chat-container">
+            <div class="chat-header"><span class="chat-avatar" aria-hidden="true">🤖</span><div><strong>ThreatLens analyst</strong><small>Questions about this analysis</small></div></div>
+            <div class="chat-quick-prompts"><span>Prompts:</span><button type="button" class="chat-chip">Explain this result in plain language</button><button type="button" class="chat-chip">What should I verify next?</button></div>
+            <div class="chat-messages" id="chat-messages"><div class="chat-bubble ai"><strong>ThreatLens AI</strong><p>Ask a question about the current analysis.</p></div></div>
+            <form id="chat-form" class="chat-input-row"><label class="visually-hidden" for="chat-input">Question for the analyst</label><input type="text" id="chat-input" placeholder="Ask about this result" autocomplete="off" maxlength="2000"><button type="submit" id="chat-send">Send</button></form>
+          </div>
+        </section>
+        <section class="subtab-content hidden" id="subtab-export"><article class="export-box"><h3>Analysis report</h3><p>Export the current scan details for your records.</p><div class="export-actions"><button type="button" class="export-btn" id="btn-copy-md">Copy Markdown</button><button type="button" class="export-btn" id="btn-download-json">Download JSON</button></div><pre class="export-preview"><code id="export-preview-code">Report will appear after analysis.</code></pre></article></section>
+      </div>
+    </section>
+
+    <section class="history" aria-labelledby="history-title">
+      <div class="section-title"><h2 id="history-title" class="eyebrow">SESSION INCIDENT LOG</h2><span id="history-count">0 entries</span></div>
+      <div class="table-wrap"><table><thead><tr><th>INDICATOR</th><th>TYPE</th><th>RESULT</th><th>TIME</th></tr></thead><tbody id="history"></tbody></table><p id="empty-history" class="empty">Completed analyses appear here. Session history is cleared when this page reloads.</p></div>
+    </section>
+    <footer>ThreatLens · Threat intelligence and device defense</footer>
+  </main>
+  <div id="toast" class="toast" role="alert" aria-live="assertive"></div>
+  <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</body>
+</html>
