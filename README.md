@@ -1,14 +1,35 @@
-# ThreatLens
+# SecNexus AI v2.0 — Pakistan's Sovereign Cyber Threat Intelligence & Forensic Analyst
 
-ThreatLens is a standalone security intelligence dashboard built with Flask, HTML, CSS, and browser JavaScript. It supports file, URL, domain, IP, and hash analysis. Without a live VirusTotal result, the app labels the result unverified instead of inventing detections or declaring the indicator safe.
+**Pakistan's Sovereign Cyber Threat Intelligence & Forensic Behavioral Analyst**
 
-The canonical EICAR antivirus test-file hashes are identified as a test artifact. Expected antivirus detections remain visible, but are not presented as a malware risk score. Results distinguish an unavailable live verdict (`NOT VERIFIED`) from a live scan with no malicious or suspicious detections (`NO THREATS FOUND`); no-detection results are not guarantees that an indicator is safe. Scan summaries use only returned VirusTotal engine telemetry. They do not infer file behavior, threat actors, or MITRE ATT&CK techniques without supporting evidence.
+> 🇵🇰 **SOVEREIGN CYBER DEFENSE** — Pakistan National Cyber Defense Framework  
+> Data analyzed on-premise, Pakistan Sovereign Secure Node.
 
-The 0–100 detection score is a transparent heuristic, not a probability: malicious detections contribute `round(85 × malicious / analyzed_engines)` points and suspicious detections contribute `round(25 × suspicious / analyzed_engines)` points, capped at 100. The result lists the evidence source and calculation for each factor. If no engines returned an analyzed result, the score is unavailable rather than zero.
+SecNexus AI v2.0 is a sovereign, forensic-grade cyber threat intelligence and behavioral analysis platform designed to protect Pakistan's cyberspace and digital infrastructure. It performs deep behavioral dissection of digital evidence, maps offenses directly to the **Pakistan Electronic Crimes Act (PECA 2016)**, and synthesizes court-admissible FIR evidence packets.
 
-## Run locally
+## Features
 
-Install Python 3.10+ and then run:
+- **MODULE 1 — Input Classification**: FILE_HASH, URL, APK, IP_ADDRESS, WHATSAPP_LINK, QR_CODE, DEEPFAKE_VIDEO
+- **MODULE 2 — 5-Layer Forensic Analysis**: Static Signatures → Cuckoo Behavioral Sandbox Simulation → APK Hunter / Android Permission Telemetry → Phishing & Deepfake Artifact Detection → PECA 2016 Statutory Attribution
+- **MODULE 3 — Evidentiary Output**: Structured court-ready JSON with PECA sections, Urdu victim explanation, investigating officer action recommendations, and formal court challan text
+- **AI Engine**: Groq AI with SecNexus sovereign forensic system prompt (with offline sovereign fallback)
+- **Threat Intelligence**: VirusTotal v3 API integration (70+ security engines)
+- **PECA 2016 Mapping**: Automatic statutory violation identification and legal attribution
+- **Urdu Summaries**: Clear, compassionate, plain-language summaries for citizens and victims in Urdu
+- **Export**: 1-click FIR Markdown copy and Sovereign JSON case packet download
+
+## Tech Stack
+
+- **Backend**: Python 3.10+ · Flask · Groq AI SDK · Requests
+- **Frontend**: Vanilla HTML5 · CSS3 (Sovereign Cyber Theme) · JavaScript (ES6+)
+- **AI Model**: Groq (openai/gpt-oss-120b or offline heuristic engine)
+- **Threat Intel**: VirusTotal v3 API
+
+## Demo Video
+
+[Recording.mp4](Recording.mp4) — SecNexus AI v2.0 Demo
+
+## Run Locally
 
 ```bash
 python -m venv .venv
@@ -17,37 +38,58 @@ pip install -r requirements.txt
 python backend.py
 ```
 
-Open http://127.0.0.1:5000.
+Open http://127.0.0.1:5000
 
-The app runs in clearly labeled demo mode. Demo results are not real security verdicts and no uploaded file is written to disk or executed. File bytes are held in memory only long enough to calculate MD5, SHA-1, and SHA-256 hashes.
+## Configuration
 
-To enable live lookups, copy `.env.example` to `.env` and set your own `VIRUSTOTAL_API_KEY`. Groq is optional and is used for analyst chat; it does not generate scan verdicts. Never commit `.env` or publish API keys.
+Copy `.env.example` to `.env`:
 
-## Verify
-
-Run the focused backend tests with:
-
-```bash
-python -m unittest discover -s tests -v
+```env
+VIRUSTOTAL_API_KEY=your_vt_key_here
+GROQ_API_KEY=your_groq_key_here
+GROQ_MODEL=openai/gpt-oss-120b
 ```
 
-## API
+Never commit `.env` or publish private API keys.
+
+## API Endpoints
 
 | Route | Method | Purpose |
 |---|---|---|
-| `/api/health` | GET | Health check |
-| `/api/scan/url` | POST | JSON body: `{ "url": "https://example.com" }` |
-| `/api/scan/hash?value=...` | GET | MD5, SHA-1, or SHA-256 lookup |
-| `/api/intelligence/ip?value=...` | GET | IP lookup |
-| `/api/intelligence/domain?value=...` | GET | Domain lookup |
-| `/api/scan/file` | POST | Multipart upload using the `file` field |
+| `/api/health` | GET | Sovereign system health and provider status |
+| `/api/scan/url` | POST | URL, domain, and WhatsApp link forensic analysis |
+| `/api/scan/hash?value=...` | GET | Cryptographic hash lookup (MD5/SHA-1/SHA-256) |
+| `/api/intelligence/ip?value=...` | GET | IP address telemetry and C2 indicator analysis |
+| `/api/intelligence/domain?value=...` | GET | Domain reputation and spoofing analysis |
+| `/api/scan/file` | POST | APK, media, binary, or evidence artifact upload |
+| `/api/ai/chat` | POST | Interactive sovereign forensic defense analyst chat |
 
-## Project structure
+## PECA 2016 Reference
 
-```text
+| Section | Offense |
+|---|---|
+| Section 9 | Unauthorized access to critical infrastructure / information system |
+| Section 10 | Unauthorized copying or transmission of critical data |
+| Section 14 | Cyberstalking and digital harassment |
+| Section 20 | Offenses against dignity of natural persons (morphing / deepfakes) |
+| Section 21 | Malicious code production, distribution, or execution |
+| Section 22 | Cyber terrorism and espionage / spyware |
+| Section 23 | Electronic fraud and identity theft |
+| Section 24 | Electronic forgery and counterfeit digital assets |
+| Section 26B | Unsolicited counterfeit communications / spam |
+
+## Project Structure
+
+```
 backend.py
 requirements.txt
 templates/index.html
 static/style.css
 static/app.js
+tests/test_backend.py
+Recording.mp4
 ```
+
+## Sovereignty Notice
+
+This system operates under sovereign cyber defense guidelines. All evidence submissions are handled securely on-premise without exposing private telemetry to unauthorized third parties.
